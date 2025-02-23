@@ -10,6 +10,7 @@ import { AddPromptDialog } from "./components/add-prompt-dialog"
 import { AppSidebar } from "./components/sidebar"
 import { cn } from "@/lib/utils"
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
 
 // Types for our data
 interface Prompt {
@@ -148,27 +149,44 @@ export default function PromptCollector() {
             ) : (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredPrompts.map((prompt, i) => (
-                  <Card key={i}>
-                    <CardHeader>
-                      <CardTitle>{prompt.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{prompt.description}</p>
-                    </CardContent>
-                    <CardFooter>
+                  <Dialog key={i}>
+                    <DialogTrigger asChild>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>{prompt.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-muted-foreground">{prompt.description}</p>
+                        </CardContent>
+                        <CardFooter>
+                          <div className="flex flex-wrap gap-2">
+                            {prompt.tags.map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className={cn(selectedTags.includes(tag) && "bg-primary text-primary-foreground")}
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{prompt.title}</DialogTitle>
+                        <DialogDescription>{prompt.description}</DialogDescription>
+                      </DialogHeader>
                       <div className="flex flex-wrap gap-2">
                         {prompt.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className={cn(selectedTags.includes(tag) && "bg-primary text-primary-foreground")}
-                          >
+                          <Badge key={tag} variant="secondary">
                             {tag}
                           </Badge>
                         ))}
                       </div>
-                    </CardFooter>
-                  </Card>
+                    </DialogContent>
+                  </Dialog>
                 ))}
               </div>
             )}
@@ -178,4 +196,3 @@ export default function PromptCollector() {
     </SidebarProvider>
   )
 }
-
